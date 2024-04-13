@@ -1,0 +1,23 @@
+{
+  "name": "mtorrent-pt-helper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ysc3839/mTorrent-PT-Helper.git"
+  },
+  "author": "ysc3839",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ysc3839/mTorrent-PT-Helper/issues"
+  },
+  "homepage": "https://github.com/ysc3839/mTorrent-PT-Helper#readme",
+  "devDependencies": {
+    "esbuild": "^0.20.2"
+  }
+}
