@@ -21,7 +21,7 @@ const xhrPrototypeProxy = new Proxy(xhr.prototype, {
 const xhrProxy = new Proxy(xhr, {
   construct() {
     const o: any = Reflect.construct(...arguments);
-    o.__proto__ = xhrPrototypeProxy;
+    Object.setPrototypeOf(o, xhrPrototypeProxy);
     return o;
   }
 });
