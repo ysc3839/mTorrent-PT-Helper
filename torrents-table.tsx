@@ -33,14 +33,8 @@ class TorrentsTableManager {
       if (colgroup && theadr && tbody) {
         const c = theadr.children;
         this.rowsCount = c.length;
-        for (let i = c.length - 1; i >= 0; --i) {
-          if (this.type === TableType.Torrents) {
-            const t = c[i].textContent;
-            if (t === '活動' || t === 'Activities') {
-              this.peersColIndex = i;
-              break;
-            }
-          } else if (this.type === TableType.Rankings) {
+        if (this.type === TableType.Rankings) {
+          for (let i = c.length - 1; i >= 0; --i) {
             const e = c[i].firstElementChild;
             if (e && e.getAttribute('color') === 'green') {
               this.peersColIndex = i;
@@ -113,10 +107,22 @@ class TorrentsTableManager {
 
   getPeersSpan(n: HTMLTableRowElement): [HTMLSpanElement | undefined, HTMLSpanElement | undefined] | undefined {
     if (this.type === TableType.Torrents) {
+      if (!this.peersColIndex) {
+        const c = n.children;
+        for (let i = c.length - 1; i >= 0; --i) {
+          const e = c[i];
+          if (e.getElementsByClassName('anticon-arrow-up').length !== 0 &&
+            e.getElementsByClassName('anticon-arrow-down').length !== 0) {
+            this.peersColIndex = i;
+            break;
+          }
+        }
+      }
+
       const peersTd = n.children[this.peersColIndex!];
+      let seeders: HTMLSpanElement | undefined, leechers: HTMLSpanElement | undefined;
       if (peersTd) {
         const spans = peersTd.getElementsByTagName('span');
-        let seeders: HTMLSpanElement | undefined, leechers: HTMLSpanElement | undefined;
         for (const s of spans) {
           if (s.childElementCount === 0) {
             if (!seeders) {
@@ -128,8 +134,8 @@ class TorrentsTableManager {
           }
         }
         //const seeders = spans[2], leechers = spans[4];
-        return [seeders, leechers];
       }
+      return [seeders, leechers];
     } else if (this.type === TableType.Rankings) {
       const seeders = n.children[this.peersColIndex!], leechers = n.children[this.peersColIndex! + 1];
       return [seeders.firstElementChild as HTMLSpanElement, leechers.firstElementChild as HTMLSpanElement];
