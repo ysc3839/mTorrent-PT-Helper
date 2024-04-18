@@ -4,6 +4,7 @@ import { waitForContent } from './content.ts';
 import { TableType, findAndSetTable, handleTorrentsTable } from './torrents-table.tsx';
 import { handleDetailPage } from './detail-page.ts';
 import './intercept-dl.js';
+import { enterUploadPage, exitUploadPage } from './upload-page.tsx';
 
 function addStyle(style) {
   const s = document.createElement('style');
@@ -48,7 +49,9 @@ waitForContent().then(e => {
   replaceUpDownIcon();
 
   const page = getPageType();
-  if (page === 'browse') {
+  if (page === 'upload') {
+    enterUploadPage();
+  } else if (page === 'browse') {
     findAndSetTable(e, TableType.Torrents);
   } else if (page === 'rankings') {
     findAndSetTable(e, TableType.Rankings);
@@ -56,14 +59,19 @@ waitForContent().then(e => {
 
   new MutationObserver(function (records) {
     const page = getPageType();
-    if (page === 'browse') {
-      handleTorrentsTable(records, TableType.Torrents);
-    } else if (page === 'rankings') {
-      handleTorrentsTable(records, TableType.Rankings);
+    if (page === 'upload') {
+      enterUploadPage();
     } else {
-      findAndSetTable();
-      if (page === 'detail') {
-        handleDetailPage(e);
+      exitUploadPage();
+      if (page === 'browse') {
+        handleTorrentsTable(records, TableType.Torrents);
+      } else if (page === 'rankings') {
+        handleTorrentsTable(records, TableType.Rankings);
+      } else {
+        findAndSetTable();
+        if (page === 'detail') {
+          handleDetailPage(e);
+        }
       }
     }
   }).observe(e, { childList: true });
