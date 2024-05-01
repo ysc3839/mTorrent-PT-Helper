@@ -1,10 +1,12 @@
+import { isApiUrlWithPath } from './api.ts';
+
 const xhr = XMLHttpRequest;
 const xhrPrototypeProxy = new Proxy(xhr.prototype, {
   get(target, prop, receiver) {
     const v = Reflect.get(...arguments);
     if (prop === 'responseText') {
       const u = new URL(receiver.responseURL);
-      if (u.origin === location.origin && u.pathname === '/api/torrent/peers') {
+      if (isApiUrlWithPath('/torrent/peers')) {
         XMLHttpRequest = xhr;
         const data = JSON.parse(v);
         if (data.code === '0') {
