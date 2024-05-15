@@ -53,9 +53,9 @@ waitForContent().then(e => {
     enterUploadPage();
   } else if (page === 'browse') {
     findAndSetTable(e, TableType.Torrents);
-  } else if (page === 'rankings') {
+  } /*else if (page === 'rankings') {
     findAndSetTable(e, TableType.Rankings);
-  }
+  }*/
 
   new MutationObserver(function (records) {
     const page = getPageType();
@@ -65,9 +65,9 @@ waitForContent().then(e => {
       exitUploadPage();
       if (page === 'browse') {
         handleTorrentsTable(records, TableType.Torrents);
-      } else if (page === 'rankings') {
+      } /*else if (page === 'rankings') {
         handleTorrentsTable(records, TableType.Rankings);
-      } else {
+      }*/ else {
         findAndSetTable();
         if (page === 'detail') {
           handleDetailPage(e);

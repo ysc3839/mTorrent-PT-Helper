@@ -27,10 +27,9 @@ class TorrentsTableManager {
     this.type = type;
     this.table = table;
     if (table) {
-      const colgroup = table.getElementsByTagName('colgroup')[0],
-        theadr = table.querySelector('thead > tr'),
+      const theadr = table.querySelector('thead > tr'),
         tbody = table.getElementsByTagName('tbody')[0];
-      if (colgroup && theadr && tbody) {
+      if (theadr && tbody) {
         const c = theadr.children;
         this.rowsCount = c.length;
         if (this.type === TableType.Rankings) {
@@ -44,7 +43,7 @@ class TorrentsTableManager {
         }
 
         this.modifyPlaceholderColspan(tbody);
-        this.addListSelectHead(colgroup, theadr, tbody);
+        this.addListSelectHead(theadr, tbody);
         this.observer.observe(tbody, { childList: true });
       }
     }
@@ -55,11 +54,9 @@ class TorrentsTableManager {
     if (td) ++td.colSpan;
   }
 
-  addListSelectHead(colgroup: HTMLTableColElement, theadr: Element, tbody: HTMLTableSectionElement) {
-    colgroup.prepend(<col style="width: 42px;" />);
-
+  addListSelectHead(theadr: Element, tbody: HTMLTableSectionElement) {
     let span: HTMLSpanElement, loading = false;
-    theadr.prepend(<th class="ant-table-cell" scope="col" style="text-align: center;">
+    theadr.prepend(<th class="border border-solid border-black p-2" style="width: 42px;">
       <button
         type="button" class={`ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only ${specialClass}`}
         click={async function() {
@@ -76,7 +73,7 @@ class TorrentsTableManager {
               setLoading(true);
               const reqs: Promise<string | null>[] = [];
               for (const tr of selected) {
-                reqs.push(genDlToken((tr as HTMLElement).dataset.rowKey!));
+                reqs.push(genDlToken((tr as HTMLElement).dataset.id!));
               }
               const urls = await Promise.all(reqs);
               if (!urls.some(i => !i)) {
@@ -90,15 +87,28 @@ class TorrentsTableManager {
   }
 
   addListSelect(tr: HTMLTableRowElement) {
+    const origClass = tr.className;
+    tr.style.transition = 'background-color .2s';
+    const a = tr.querySelector('a[href^="/detail/"]');
+    if (a) {
+      tr.dataset.id = a.getAttribute('href')!.slice(8); // '/detail/'.length = 8
+    }
+
     let label: HTMLLabelElement, span: HTMLSpanElement;
-    tr.prepend(<td class="ant-table-cell ant-table-selection-column">{label =
+    tr.prepend(<td class="border border-solid border-black p-2 " align="center">{label =
       <label class={`ant-checkbox-wrapper ${specialClass}`} style="transform: scale(1.5);">{span =
         <span class={`ant-checkbox ant-wave-target ${specialClass}`}>
           <input class="ant-checkbox-input" type="checkbox" change={function() {
             const c = (this as HTMLInputElement).checked;
             span.classList.toggle('ant-checkbox-checked', c);
             label.classList.toggle('ant-checkbox-wrapper-checked', c);
-            tr.classList.toggle('ant-table-row-selected', c);
+            if (c) {
+              const l = tr.classList;
+              l.remove('bg-sticky_top', 'bg-sticky_normal');
+              l.add('bg-black/10', 'ant-table-row-selected');
+            } else {
+              tr.className = origClass;
+            }
           }} />
           <span class="ant-checkbox-inner"></span>
         </span>}
@@ -142,10 +152,12 @@ class TorrentsTableManager {
     }
   }
 
-  addPeersLink(e: Element, id: string, seeders?: HTMLSpanElement, leechers?: HTMLSpanElement) {
-    const p = e.parentElement!;
-    e.remove();
-    const a = <a href={`/detail/${id}#peers`} target="_blank" style="display: flex; justify-content: center;">{e}</a> as HTMLAnchorElement;
+  addPeersLink(p: Element, id: string, seeders?: HTMLSpanElement, leechers?: HTMLSpanElement) {
+    const c = Array.from(p.children);
+    for (const i of c) {
+      i.remove();
+    }
+    const a = <a href={`/detail/${id}#peers`} target="_blank" style="display: flex; flex-direction: column; align-items: center;">{...c}</a> as HTMLAnchorElement;
     if (seeders && leechers) {
       let loading = false, loadingIcon;
       a.addEventListener('click', async function(e) {
@@ -219,12 +231,13 @@ class TorrentsTableManager {
     if (this.type === TableType.Torrents) {
       const peersTd = n.children[this.peersColIndex!];
       if (peersTd) {
-        this.addPeersLink(peersTd.firstElementChild!, n.dataset.rowKey!, seeders, leechers);
+        this.addPeersLink(peersTd, n.dataset.id!, seeders, leechers);
       }
     } else if (this.type === TableType.Rankings) {
       if (seeders && leechers) {
-        this.addPeersLink(seeders, n.dataset.rowKey!, seeders, leechers);
-        this.addPeersLink(leechers, n.dataset.rowKey!, seeders, leechers);
+        const { id } = n.dataset;
+        this.addPeersLink(seeders, id!, seeders, leechers);
+        this.addPeersLink(leechers, id!, seeders, leechers);
       }
     }
   }
@@ -240,9 +253,9 @@ class TorrentsTableManager {
         if ((n as Element).tagName === 'TR' &&
           (n as HTMLTableRowElement).childElementCount === this.rowsCount &&
           (n as HTMLTableRowElement).className !== 'ant-table-placeholder') {
+          this.addListSelect(n as HTMLTableRowElement);
           this.setPeersLinkAndColor(n as HTMLTableRowElement);
           this.replaceDownloadIcon(n as HTMLTableRowElement);
-          this.addListSelect(n as HTMLTableRowElement);
         }
       }
     }
@@ -253,7 +266,7 @@ const torrentsTable = new TorrentsTableManager();
 
 export function findAndSetTable(n?: Element, type?: TableType) {
   if (n) {
-    const e = n.querySelector('.ant-table-content > table');
+    const e = n.querySelector('table');
     if (e) {
       torrentsTable.set(e as HTMLTableElement, type!);
       return true;
