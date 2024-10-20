@@ -4,7 +4,11 @@
 
 # 功能
 #### 种子列表及排行列表批量复制链接
-![](https://github.com/ysc3839/mTorrent-PT-Helper/assets/12028138/79a2f9a6-98a3-43d7-8b5f-6966206ea216)
+![](https://github.com/user-attachments/assets/4cd80a6a-d299-4f1d-8f16-6592599ca7e8)  
+复制按钮右键点击可全选或反选。  
+![](https://github.com/user-attachments/assets/7e462ffd-5c86-4228-916a-f5d45f66b7b5)  
+可显示链接获取进度。  
+![](https://github.com/user-attachments/assets/a274c0df-006c-4204-876b-9b389a516ac5)
 
 #### 种子列表及排行列表右侧做种下载人数点击刷新
 左键点击即可刷新。鼠标中键点击，或者按下键盘 <kbd>Ctrl</kbd> 或 <kbd>Shift</kbd> 同时点击，可在新页面中打开种子详情并跳转到同伴信息。  

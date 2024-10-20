@@ -4,7 +4,7 @@
 // @namespace   https://greasyfork.org/zh-CN/users/163820-ysc3839
 // @description Helper script for mTorrent based PT sites (M-Team)
 // @description:zh-CN 用于基于 mTorrent PT 站 (M-Team) 的辅助脚本
-// @version     1.2.0
+// @version     1.3.0
 // @author      ysc3839
 // @license     MIT
 // @match       https://kp.m-team.cc/*

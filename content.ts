@@ -1,3 +1,9 @@
+export function addStyle(style) {
+  const s = document.createElement('style');
+  s.textContent = style;
+  document.head.appendChild(s);
+}
+
 export let specialClass: string;
 
 export function waitForContent(): Promise<Element> {

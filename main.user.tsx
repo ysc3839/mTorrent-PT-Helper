@@ -1,18 +1,16 @@
 import { E } from './jsx.ts';
 import { ArrowUp, ArrowDown } from './icons.tsx';
-import { waitForContent } from './content.ts';
+import { addStyle, waitForContent } from './content.ts';
 import { TableType, findAndSetTable, handleTorrentsTable } from './torrents-table.tsx';
 import { handleDetailPage } from './detail-page.ts';
 import './intercept-dl.js';
 import { enterUploadPage, exitUploadPage } from './upload-page.tsx';
 
-function addStyle(style) {
-  const s = document.createElement('style');
-  s.textContent = style;
-  document.head.appendChild(s);
+addStyle(`#app-content {
+  overflow: unset !important;
 }
 
-addStyle(`@media screen and (max-width: 1380px) {
+@media screen and (max-width: 1380px) {
   #app-content > div { width: 100% !important; }
   .mx-auto { margin: 0 !important; }
 }
@@ -53,9 +51,9 @@ waitForContent().then(e => {
     enterUploadPage();
   } else if (page === 'browse') {
     findAndSetTable(e, TableType.Torrents);
-  } /*else if (page === 'rankings') {
+  } else if (page === 'rankings') {
     findAndSetTable(e, TableType.Rankings);
-  }*/
+  }
 
   new MutationObserver(function (records) {
     const page = getPageType();
@@ -65,9 +63,9 @@ waitForContent().then(e => {
       exitUploadPage();
       if (page === 'browse') {
         handleTorrentsTable(records, TableType.Torrents);
-      } /*else if (page === 'rankings') {
+      } else if (page === 'rankings') {
         handleTorrentsTable(records, TableType.Rankings);
-      }*/ else {
+      } else {
         findAndSetTable();
         if (page === 'detail') {
           handleDetailPage(e);

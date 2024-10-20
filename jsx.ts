@@ -1,4 +1,4 @@
-export function E(tag: string | null, attr: any, ...nodes: (string | Node)[]) {
+export function E(tag: string | null, attr: any, ...nodes: (string | Node)[]): HTMLElement | DocumentFragment {
   const ns = attr?.xmlns,
     e = tag ? (ns ? document.createElementNS(ns, tag) : document.createElement(tag)) : new DocumentFragment();
   if (attr) {
@@ -12,6 +12,6 @@ export function E(tag: string | null, attr: any, ...nodes: (string | Node)[]) {
       }
     }
   }
-  e.append(...nodes);
+  e.append(...nodes.flat());
   return e;
 }
