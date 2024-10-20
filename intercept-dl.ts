@@ -7,7 +7,7 @@ navigation!.addEventListener('navigate', e => {
     const url = e.destination.url, u = new URL(url);
     if (isApiUrlWithPath(u, '/rss/dl') || isApiUrlWithPath(u, '/rss/dlv2')) {
       e.preventDefault();
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(url).then(() => { alert('复制成功'); });
     }
   }
 });
