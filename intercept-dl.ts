@@ -5,7 +5,7 @@ navigation!.addEventListener('navigate', e => {
   console.log('navigate', e);
   if (!modifierState && e.cancelable && !e.hashChange && e.navigationType === 'push') {
     const url = e.destination.url, u = new URL(url);
-    if (isApiUrlWithPath(u, '/rss/dl')) {
+    if (isApiUrlWithPath(u, '/rss/dl') || isApiUrlWithPath(u, '/rss/dlv2')) {
       e.preventDefault();
       navigator.clipboard.writeText(url);
     }
