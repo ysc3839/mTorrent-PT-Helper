@@ -6,7 +6,7 @@ const xhrPrototypeProxy = new Proxy(xhr.prototype, {
     const v = Reflect.get(...arguments);
     if (prop === 'responseText') {
       const u = new URL(receiver.responseURL);
-      if (isApiUrlWithPath('/torrent/peers')) {
+      if (isApiUrlWithPath(u, '/torrent/peers')) {
         XMLHttpRequest = xhr;
         const data = JSON.parse(v);
         if (data.code === '0') {
