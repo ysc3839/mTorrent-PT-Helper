@@ -25,8 +25,24 @@ function getAuth() {
   return localStorage.getItem("auth")!;
 }
 
+function getVisitorId() {
+  return localStorage.getItem("visitorId")!;
+}
+
+function getDid() {
+  return localStorage.getItem("did")!;
+}
+
 function getApiFetchOptions(): RequestInit {
-  return { method: 'POST', headers: { authorization: getAuth() } };
+  return {
+    method: 'POST',
+    headers: {
+      authorization: getAuth(),
+      visitorId: getVisitorId(),
+      did: getDid(),
+      ts: Math.floor(Date.now() / 1e3) as unknown as string
+    }
+  };
 }
 
 export async function genDlToken(id: string): Promise<string | null> {
